@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'vs2017-win2016'
 
 # parameters:
   # buildAgent: ''
@@ -34,11 +34,11 @@ strategy:
       buildPlatform: 'winuwp'
       buildArch: 'x86'
       buildConfig: 'debug'
-    hololens2:
-      buildTarget: 'webrtc'
-      buildPlatform: 'arm'
-      buildArch: 'arm'
-      buildConfig: 'debug'
+    # hololens2:
+      # buildTarget: 'webrtc'
+      # buildPlatform: 'arm'
+      # buildArch: 'arm'
+      # buildConfig: 'debug'
   maxParallel: 3
 
 steps:
