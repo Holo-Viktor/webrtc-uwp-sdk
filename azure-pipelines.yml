@@ -1,0 +1,72 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+# parameters:
+  # buildAgent: ''
+  # buildTarget: ''      # webrtc|remoting
+  # buildPlatform: ''    # Win32|UWP
+  # buildArch: ''        # x86|x64|ARM|ARM64
+  # buildConfig: ''      # debug|release
+
+variables:
+  buildTarget: 'webrtc|remoting'
+  buildPlatform: 'win|winuwp|arm'
+  buildArch: 'x86|x64|arm'
+  buildConfig: 'debug|release'
+
+steps:
+- checkout: self
+  lfs: true
+  submodules: recursive
+
+- task: UsePythonVersion@0
+  displayName: 'Use Python 2.7.16 x64 for Google GN'
+  inputs:
+    versionSpec: '2.x'
+    addToPath: true
+    architecture: 'x64'
+  timeoutInMinutes: 5
+
+  # Prepare the environment with the setup script from Google
+- task: PythonScript@0
+  displayName: Prepare $(buildTarget)
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: 'scripts/run.py'
+    arguments: '-a prepare -t $(buildTarget) -p $(buildPlatform) --cpus $(buildArch) -c $(buildConfig) --noWrapper'
+  timeoutInMinutes: 10
+
+- task: PythonScript@0
+  displayName: Build $(buildTarget)
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: 'scripts/run.py'
+    arguments: '-a build -t $(buildTarget) -p $(buildPlatform) --cpus $(buildArch) -c $(buildConfig) --noWrapper'
+  timeoutInMinutes: 20
+
+# - script: |
+    # cd scripts
+    # ./run.py -a prepare -t webrtc -p win --cpus x64 -c debug --noWrapper
+  # displayName: 'Prepare'
+
+# - script: |
+    # cd scripts
+    # ./run.py", "-a", "build", "-t", "webrtc", "-p", "win", "--cpus", "x64", "-c", "debug", "--noWrapper
+  # displayName: 'Build'
+
+
+
+  # Publish Microsoft.MixedReality.WebRTC.Native.dll and associated files (PDB, ...)
+  # - task: PublishPipelineArtifact@0
+    # displayName: 'Publish C++ WebRTC lib ($(buildTriple))'
+    # inputs:
+      # artifactName: 'Microsoft.MixedReality.WebRTC.Native_$(buildTriple)'
+      # targetPath: bin/${{parameters.buildPlatform}}/${{parameters.buildArch}}/${{parameters.buildConfig}}
