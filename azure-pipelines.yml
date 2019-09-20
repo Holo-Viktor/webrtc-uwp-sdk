@@ -16,11 +16,30 @@ pool:
   # buildArch: ''        # x86|x64|ARM|ARM64
   # buildConfig: ''      # debug|release
 
-variables:
-  buildTarget: 'webrtc|remoting'
-  buildPlatform: 'win|winuwp|arm'
-  buildArch: 'x86|x64|arm'
-  buildConfig: 'debug|release'
+# variables:
+  # buildTarget: 'webrtc|remoting'
+  # buildPlatform: 'win|winuwp|arm'
+  # buildArch: 'x86|x64|arm'
+  # buildConfig: 'debug|release'
+
+strategy:
+  matrix:
+    win64:
+      buildTarget: 'webrtc'
+      buildPlatform: 'win'
+      buildArch: 'x64'
+      buildConfig: 'debug'
+    hololens1:
+      buildTarget: 'webrtc'
+      buildPlatform: 'winuwp'
+      buildArch: 'x86'
+      buildConfig: 'debug'
+    hololens2:
+      buildTarget: 'webrtc'
+      buildPlatform: 'arm'
+      buildArch: 'arm'
+      buildConfig: 'debug'
+  maxParallel: 3
 
 steps:
 - checkout: self
