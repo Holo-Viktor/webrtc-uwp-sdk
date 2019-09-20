@@ -69,7 +69,7 @@ steps:
     scriptSource: 'filePath'
     scriptPath: 'scripts/run.py'
     arguments: '-a build -t $(buildTarget) -p $(buildPlatform) --cpus $(buildArch) -c $(buildConfig) --noWrapper'
-  timeoutInMinutes: 20
+  # timeoutInMinutes: 20
 
 # - script: |
     # cd scripts
